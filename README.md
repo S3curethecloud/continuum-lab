@@ -38,11 +38,40 @@ scanners/      Scanner configuration and adapters
 engine/        Reasoning, scoring, validation, and evidence scripts
 evidence/      Generated findings, reports, and decision traces
 policies/      Learn, assist, and lab-only enforce mode controls
-Trust Modes
-Mode	Behavior
-learn	Generate findings and recommendations only
-assist	Generate suggested patches or remediation plans for review
-enforce-lab-only	Apply safe, reversible changes only inside the lab
-Status
+```
 
-Initial scaffold complete.
+## Trust Modes
+
+| Mode | Behavior |
+|---|---|
+| learn | Generate findings and recommendations only |
+| assist | Generate suggested patches or remediation plans for review |
+| enforce-lab-only | Apply safe, reversible changes only inside the lab |
+
+## Run the Lab
+
+```bash
+./run_lab.sh
+```
+
+This generates:
+
+- `evidence/prioritized-findings.json`
+- `evidence/prioritized-risk-register.md`
+- `evidence/decision-trace.md`
+- `evidence/evidence-bundle.json`
+- `evidence/evidence-bundle.md`
+
+## Current v0.1 Workflow
+
+```text
+normalized findings
+  -> synthetic context
+  -> context-aware prioritization
+  -> decision trace
+  -> evidence bundle
+```
+
+## Status
+
+Initial reasoning and evidence-generation scaffold in progress.

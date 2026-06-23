@@ -1,0 +1,164 @@
+{
+  "findings": [
+    {
+      "auth_required": false,
+      "business_criticality": "tier_1",
+      "confidence": "high",
+      "data_classification": "customer_pii",
+      "decision_reasons": [
+        "+70: base severity is high",
+        "+10: environment is prod-like",
+        "+15: service is internet reachable",
+        "+10: service is in a production path",
+        "+8: route or service is marked as not requiring auth",
+        "+4: no WAF or edge filtering recorded",
+        "+10: business criticality is tier_1",
+        "+15: regulated data present",
+        "+8: service identity is marked over-permissive",
+        "+5: privilege level is high",
+        "+5: scanner confidence is high",
+        "+0: validation status is pending_validation"
+      ],
+      "description": "Potential unsafe query construction in customer search route.",
+      "environment": "prod-like",
+      "file": "apps/vulnerable-node-api/src/routes/search.js",
+      "finding_id": "FIND-001",
+      "has_waf": false,
+      "internet_reachable": true,
+      "priority": "P0",
+      "production_path": true,
+      "recommended_action": "Run lab-only validation before remediation. Do not apply production changes.",
+      "risk_score": 100,
+      "service": "customer-api",
+      "severity": "high",
+      "source": "semgrep",
+      "type": "sql_injection",
+      "validation_status": "pending_validation"
+    },
+    {
+      "auth_required": true,
+      "business_criticality": "tier_3",
+      "confidence": "medium",
+      "data_classification": "test",
+      "decision_reasons": [
+        "+85: base severity is critical",
+        "-8: environment is dev",
+        "-5: service is not internet reachable",
+        "-8: WAF or edge filtering is present",
+        "-5: business criticality is tier_3",
+        "+0: low-sensitivity data classification is test",
+        "+0: validation status is unconfirmed"
+      ],
+      "description": "Critical dependency finding in a dev-only internal worker.",
+      "environment": "dev",
+      "file": "apps/vulnerable-python-api/requirements.txt",
+      "finding_id": "FIND-002",
+      "has_waf": true,
+      "internet_reachable": false,
+      "priority": "P2",
+      "production_path": false,
+      "recommended_action": "Validate reachability and usage in the lab, then schedule remediation if confirmed.",
+      "risk_score": 59,
+      "service": "admin-worker",
+      "severity": "critical",
+      "source": "trivy",
+      "type": "vulnerable_dependency",
+      "validation_status": "unconfirmed"
+    },
+    {
+      "auth_required": false,
+      "business_criticality": "tier_1",
+      "confidence": "low",
+      "data_classification": "customer_pii",
+      "decision_reasons": [
+        "+45: base severity is medium",
+        "+10: environment is prod-like",
+        "+15: service is internet reachable",
+        "+10: service is in a production path",
+        "+8: route or service is marked as not requiring auth",
+        "+4: no WAF or edge filtering recorded",
+        "+10: business criticality is tier_1",
+        "+15: regulated data present",
+        "+8: service identity is marked over-permissive",
+        "+5: privilege level is high",
+        "-5: scanner confidence is low",
+        "-25: validation status is likely_test_fixture",
+        "cap: validation status likely_test_fixture limits score to 25"
+      ],
+      "description": "Secret-like string appears in a test fixture.",
+      "environment": "prod-like",
+      "file": "apps/vulnerable-node-api/test/fixtures/example.env",
+      "finding_id": "FIND-003",
+      "has_waf": false,
+      "internet_reachable": true,
+      "priority": "P4",
+      "production_path": true,
+      "recommended_action": "Keep as low priority, document fixture status, and ensure test secrets cannot be mistaken for real secrets.",
+      "risk_score": 25,
+      "service": "customer-api",
+      "severity": "medium",
+      "source": "gitleaks",
+      "type": "secret_detection",
+      "validation_status": "likely_test_fixture"
+    }
+  ],
+  "generated_at": "2026-06-23T03:08:06.224628+00:00",
+  "policy_files": {
+    "assist": "mode: assist\ndescription: \"Generate remediation plans and optional patch suggestions for human review.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  create_patch_suggestion: true\n  apply_patch: false\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true",
+    "enforce_lab_only": "mode: enforce-lab-only\ndescription: \"Apply safe, reversible remediations inside local lab services only.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  create_patch_suggestion: true\n  apply_patch_in_lab: true\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true\nscope:\n  allowed_environment: local_lab_only",
+    "learn": "mode: learn\ndescription: \"Generate findings, context, risk scores, and recommendations only.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  apply_patch: false\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true"
+  },
+  "schema": "continuum-lab-evidence-bundle/v0.1",
+  "scope": {
+    "cloud_mutation": false,
+    "environment": "local_lab_only",
+    "external_targeting": false,
+    "production_enforcement": false,
+    "real_credentials": false
+  },
+  "summary": {
+    "by_priority": {
+      "P0": 1,
+      "P1": 0,
+      "P2": 1,
+      "P3": 0,
+      "P4": 1
+    },
+    "by_service": {
+      "admin-worker": 1,
+      "customer-api": 2
+    },
+    "by_validation_status": {
+      "likely_test_fixture": 1,
+      "pending_validation": 1,
+      "unconfirmed": 1
+    },
+    "top_findings": [
+      {
+        "finding_id": "FIND-001",
+        "priority": "P0",
+        "risk_score": 100,
+        "service": "customer-api",
+        "type": "sql_injection",
+        "validation_status": "pending_validation"
+      },
+      {
+        "finding_id": "FIND-002",
+        "priority": "P2",
+        "risk_score": 59,
+        "service": "admin-worker",
+        "type": "vulnerable_dependency",
+        "validation_status": "unconfirmed"
+      },
+      {
+        "finding_id": "FIND-003",
+        "priority": "P4",
+        "risk_score": 25,
+        "service": "customer-api",
+        "type": "secret_detection",
+        "validation_status": "likely_test_fixture"
+      }
+    ],
+    "total_findings": 3
+  }
+}

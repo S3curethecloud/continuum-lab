@@ -1,6 +1,6 @@
 # Prioritized Risk Register
 
-Generated: 2026-06-23T03:03:19.427074+00:00
+Generated: 2026-06-23T03:08:06.202781+00:00
 
 | Priority | Score | Finding | Severity | Service | Type | Validation | Summary |
 |---|---:|---|---|---|---|---|---|
