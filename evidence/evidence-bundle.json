@@ -58,6 +58,11 @@
       "validation_status": "confirmed_in_lab"
     },
     {
+      "advisory": {
+        "id": "CONTINUUM-LAB-DJANGO-2-2-0",
+        "source": "local_lab_fixture",
+        "summary": "Local lab fixture representing an outdated dependency finding."
+      },
       "auth_required": true,
       "business_criticality": "tier_3",
       "confidence": "medium",
@@ -71,14 +76,17 @@
         "+0: low-sensitivity data classification is test",
         "+0: validation status is unconfirmed"
       ],
-      "description": "Outdated dependency marker found in local lab requirements file.",
-      "discovery_method": "static_dependency_marker_match",
+      "description": "Outdated Django dependency marker found in local lab requirements file.",
+      "discovery_method": "dependency_audit_adapter",
       "environment": "dev",
       "external_targeting": false,
       "file": "apps/vulnerable-python-api/requirements.txt",
       "finding_id": "FIND-002",
+      "fixed_version": "2.2.28",
       "has_waf": true,
+      "installed_version": "2.2.0",
       "internet_reachable": false,
+      "package": "django",
       "priority": "P2",
       "production_path": false,
       "recommended_action": "Validate reachability and usage in the lab, then schedule remediation if confirmed.",
@@ -87,7 +95,7 @@
       "scanner_family": "dependency",
       "service": "admin-worker",
       "severity": "critical",
-      "source": "local-static-discovery",
+      "source": "dependency-audit",
       "type": "vulnerable_dependency",
       "validation_evidence": [
         "Finding maps to admin-worker",
@@ -155,7 +163,7 @@
       "validation_status": "likely_test_fixture"
     }
   ],
-  "generated_at": "2026-06-23T04:40:06.748181+00:00",
+  "generated_at": "2026-06-23T04:43:32.806273+00:00",
   "policy_files": {
     "assist": "mode: assist\ndescription: \"Generate remediation plans and optional patch suggestions for human review.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  create_patch_suggestion: true\n  apply_patch: false\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true",
     "enforce_lab_only": "mode: enforce-lab-only\ndescription: \"Apply safe, reversible remediations inside local lab services only.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  create_patch_suggestion: true\n  apply_patch_in_lab: true\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true\nscope:\n  allowed_environment: local_lab_only",

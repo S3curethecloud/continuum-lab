@@ -56,6 +56,11 @@
     "validation_status": "confirmed_in_lab"
   },
   {
+    "advisory": {
+      "id": "CONTINUUM-LAB-DJANGO-2-2-0",
+      "source": "local_lab_fixture",
+      "summary": "Local lab fixture representing an outdated dependency finding."
+    },
     "auth_required": true,
     "business_criticality": "tier_3",
     "confidence": "medium",
@@ -69,14 +74,17 @@
       "+0: low-sensitivity data classification is test",
       "+0: validation status is unconfirmed"
     ],
-    "description": "Outdated dependency marker found in local lab requirements file.",
-    "discovery_method": "static_dependency_marker_match",
+    "description": "Outdated Django dependency marker found in local lab requirements file.",
+    "discovery_method": "dependency_audit_adapter",
     "environment": "dev",
     "external_targeting": false,
     "file": "apps/vulnerable-python-api/requirements.txt",
     "finding_id": "FIND-002",
+    "fixed_version": "2.2.28",
     "has_waf": true,
+    "installed_version": "2.2.0",
     "internet_reachable": false,
+    "package": "django",
     "priority": "P2",
     "production_path": false,
     "risk_score": 59,
@@ -84,7 +92,7 @@
     "scanner_family": "dependency",
     "service": "admin-worker",
     "severity": "critical",
-    "source": "local-static-discovery",
+    "source": "dependency-audit",
     "type": "vulnerable_dependency",
     "validation_evidence": [
       "Finding maps to admin-worker",

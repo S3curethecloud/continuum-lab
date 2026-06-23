@@ -1,5 +1,7 @@
 {
   "discovery_sources": {
+    "dependency_audit_findings": 1,
+    "dependency_audit_output_present": true,
     "gitleaks_findings": 1,
     "gitleaks_output_present": true,
     "semgrep_findings": 1,
@@ -34,17 +36,25 @@
       "validation_status": "pending_validation"
     },
     {
+      "advisory": {
+        "id": "CONTINUUM-LAB-DJANGO-2-2-0",
+        "source": "local_lab_fixture",
+        "summary": "Local lab fixture representing an outdated dependency finding."
+      },
       "confidence": "medium",
-      "description": "Outdated dependency marker found in local lab requirements file.",
-      "discovery_method": "static_dependency_marker_match",
+      "description": "Outdated Django dependency marker found in local lab requirements file.",
+      "discovery_method": "dependency_audit_adapter",
       "external_targeting": false,
       "file": "apps/vulnerable-python-api/requirements.txt",
       "finding_id": "FIND-002",
+      "fixed_version": "2.2.28",
+      "installed_version": "2.2.0",
+      "package": "django",
       "safe_lab_only": true,
       "scanner_family": "dependency",
       "service": "admin-worker",
       "severity": "critical",
-      "source": "local-static-discovery",
+      "source": "dependency-audit",
       "type": "vulnerable_dependency",
       "validation_status": "unconfirmed"
     },
@@ -75,7 +85,7 @@
       "validation_status": "pending_validation"
     }
   ],
-  "generated_at": "2026-06-23T04:40:06.637761+00:00",
+  "generated_at": "2026-06-23T04:43:32.686736+00:00",
   "schema": "continuum-lab-normalized-findings/v0.1",
   "scope": {
     "cloud_mutation": false,

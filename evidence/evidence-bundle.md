@@ -1,6 +1,6 @@
 # Continuum Lab Evidence Bundle
 
-Generated: 2026-06-23T04:40:06.748181+00:00
+Generated: 2026-06-23T04:43:32.806273+00:00
 
 ## Scope
 
@@ -83,7 +83,7 @@ Description: Unsafe SQL-style query construction found in local lab code.
 - Severity: critical
 - Risk score: 59
 - Validation status: unconfirmed
-- Source: local-static-discovery
+- Source: dependency-audit
 - File: apps/vulnerable-python-api/requirements.txt
 - Recommended action: Validate reachability and usage in the lab, then schedule remediation if confirmed.
 
@@ -97,7 +97,7 @@ Decision reasons:
 - +0: low-sensitivity data classification is test
 - +0: validation status is unconfirmed
 
-Description: Outdated dependency marker found in local lab requirements file.
+Description: Outdated Django dependency marker found in local lab requirements file.
 
 ### FIND-003 - P4
 

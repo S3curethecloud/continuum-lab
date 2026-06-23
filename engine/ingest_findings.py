@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_DIR = ROOT / "evidence"
 SEMGREP_OUTPUT = ROOT / "scanners/semgrep/semgrep-output.json"
 GITLEAKS_OUTPUT = ROOT / "scanners/gitleaks/gitleaks-output.json"
+DEPENDENCY_AUDIT_OUTPUT = ROOT / "scanners/dependency-audit/dependency-audit-output.json"
 
 
 def load_json(path: Path, default: Any) -> Any:
@@ -192,6 +193,53 @@ def discover_gitleaks_results() -> list[dict[str, Any]]:
     return findings
 
 
+def normalize_dependency_audit_result(result: dict[str, Any]) -> dict[str, Any]:
+    finding_id = str(result.get("finding_id") or "").strip()
+    if not finding_id:
+        package = str(result.get("package", "unknown"))
+        file_path = str(result.get("file", "unknown"))
+        finding_id = stable_finding_id("DEP", f"{package}:{file_path}")
+
+    return {
+        "finding_id": finding_id,
+        "source": "dependency-audit",
+        "scanner_family": str(result.get("scanner_family", "dependency")),
+        "type": str(result.get("type", "vulnerable_dependency")),
+        "service": str(result.get("service", infer_service_from_path(str(result.get("file", ""))))),
+        "file": str(result.get("file", "unknown")),
+        "severity": str(result.get("severity", "medium")),
+        "confidence": str(result.get("confidence", "medium")),
+        "validation_status": str(result.get("validation_status", "unconfirmed")),
+        "description": str(result.get("description", "Dependency finding normalized by Continuum Lab.")),
+        "discovery_method": str(result.get("discovery_method", "dependency_audit_adapter")),
+        "package": result.get("package"),
+        "installed_version": result.get("installed_version"),
+        "fixed_version": result.get("fixed_version"),
+        "advisory": result.get("advisory", {}),
+        "external_targeting": False,
+        "safe_lab_only": True,
+    }
+
+
+def discover_dependency_audit_results() -> list[dict[str, Any]]:
+    raw = load_json(DEPENDENCY_AUDIT_OUTPUT, {})
+
+    if isinstance(raw, dict) and isinstance(raw.get("findings"), list):
+        results = raw["findings"]
+    elif isinstance(raw, list):
+        results = raw
+    else:
+        results = []
+
+    findings = []
+    for result in results:
+        if not isinstance(result, dict):
+            continue
+        findings.append(normalize_dependency_audit_result(result))
+
+    return findings
+
+
 def discover_sql_injection_marker() -> list[dict[str, Any]]:
     path = ROOT / "apps/vulnerable-node-api/src/routes/search.js"
 
@@ -316,17 +364,15 @@ def main() -> None:
 
     semgrep_findings = discover_semgrep_results()
     gitleaks_findings = discover_gitleaks_results()
+    dependency_findings = discover_dependency_audit_results()
 
     findings.extend(semgrep_findings)
     findings.extend(gitleaks_findings)
+    findings.extend(dependency_findings)
 
     # Fallback keeps the lab runnable even before scanner adapters have been run.
     findings.extend(discover_sql_injection_marker())
-
-    # Dependency demo source remains a local static marker for now.
     findings.extend(discover_dependency_marker())
-
-    # Secret fixture fallback remains available until Gitleaks output exists.
     findings.extend(discover_secret_fixture_marker())
 
     findings = dedupe_findings(findings)
@@ -346,6 +392,8 @@ def main() -> None:
             "semgrep_findings": len(semgrep_findings),
             "gitleaks_output_present": GITLEAKS_OUTPUT.exists(),
             "gitleaks_findings": len(gitleaks_findings),
+            "dependency_audit_output_present": DEPENDENCY_AUDIT_OUTPUT.exists(),
+            "dependency_audit_findings": len(dependency_findings),
             "static_fallback_enabled": True,
         },
         "findings": findings,
@@ -363,6 +411,11 @@ def main() -> None:
         print(f"Gitleaks adapter findings: {len(gitleaks_findings)}")
     else:
         print("Gitleaks adapter findings: 0. Static fallback used for secret fixture demo finding.")
+
+    if dependency_findings:
+        print(f"Dependency adapter findings: {len(dependency_findings)}")
+    else:
+        print("Dependency adapter findings: 0. Static fallback used for dependency demo finding.")
 
     print(f"Wrote {EVIDENCE_DIR / 'findings.json'}")
 

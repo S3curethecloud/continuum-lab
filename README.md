@@ -187,3 +187,28 @@ Then rerun the lab:
 When Gitleaks output is present, engine/ingest_findings.py normalizes Gitleaks JSON into the Continuum Lab finding schema. The current demo maps the fake fixture secret to FIND-003. The validation layer then classifies it as likely_test_fixture, and prioritization caps the risk score to P4.
 
 This demonstrates that scanner findings should be validated and contextualized before being escalated.
+
+## Dependency Scanning Adapter
+
+The lab includes a local dependency-audit adapter for dependency-risk discovery.
+
+Runner:
+
+```bash
+./scanners/dependency-audit/run_dependency_audit.sh
+
+This writes:
+
+scanners/dependency-audit/dependency-audit-output.json
+
+Then rerun the lab:
+
+./run_lab.sh
+
+When dependency-audit output is present, engine/ingest_findings.py normalizes dependency findings into the Continuum Lab finding schema. The current demo maps the intentionally outdated Django requirement to FIND-002.
+
+Expected outcome:
+
+Dependency adapter -> FIND-002 -> P2
+
+The finding remains P2 instead of P0 because context shows the affected service is dev, internal, not internet reachable, and protected by compensating controls.
