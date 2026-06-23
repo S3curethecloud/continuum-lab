@@ -2,8 +2,14 @@
 """
 Continuum Lab v0.1 - Local discovery ingester.
 
-This script performs safe, local-only static discovery against lab files and
-generates normalized findings.
+This script performs safe, local-only discovery against lab files and scanner
+outputs, then generates normalized findings.
+
+Current discovery sources:
+- Semgrep JSON output when scanners/semgrep/semgrep-output.json exists
+- Local static marker fallback for demo continuity
+- Local dependency marker
+- Local secret fixture marker
 
 It does not exploit targets, scan external systems, call cloud APIs, mutate
 resources, or use real credentials.
@@ -11,6 +17,7 @@ resources, or use real credentials.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,6 +26,21 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_DIR = ROOT / "evidence"
+SEMGREP_OUTPUT = ROOT / "scanners/semgrep/semgrep-output.json"
+
+
+def load_json(path: Path, default: Any) -> Any:
+    if not path.exists():
+        return default
+
+    raw = path.read_text(encoding="utf-8").strip()
+    if not raw:
+        return default
+
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Invalid JSON in {path}: {exc}") from exc
 
 
 def write_json(path: Path, data: Any) -> None:
@@ -31,6 +53,83 @@ def file_contains(path: Path, needles: list[str]) -> bool:
 
     text = path.read_text(encoding="utf-8", errors="replace")
     return all(needle in text for needle in needles)
+
+
+def stable_finding_id(prefix: str, value: str) -> str:
+    digest = hashlib.sha256(value.encode("utf-8")).hexdigest()[:8].upper()
+    return f"{prefix}-{digest}"
+
+
+def infer_service_from_path(path: str) -> str:
+    if path.startswith("apps/vulnerable-node-api/"):
+        return "customer-api"
+    if path.startswith("apps/vulnerable-python-api/"):
+        return "admin-worker"
+    return "unknown-service"
+
+
+def semgrep_severity_to_continuum(severity: str) -> str:
+    normalized = severity.lower()
+    if normalized == "error":
+        return "high"
+    if normalized == "warning":
+        return "medium"
+    if normalized == "info":
+        return "low"
+    return "info"
+
+
+def normalize_semgrep_result(result: dict[str, Any]) -> dict[str, Any]:
+    extra = result.get("extra", {}) if isinstance(result.get("extra"), dict) else {}
+    metadata = extra.get("metadata", {}) if isinstance(extra.get("metadata"), dict) else {}
+
+    path = str(result.get("path", "unknown"))
+    check_id = str(result.get("check_id", "semgrep.unknown"))
+    severity = str(extra.get("severity", "INFO"))
+
+    finding_id = str(metadata.get("continuum_finding_id") or "").strip()
+    if not finding_id:
+        finding_id = stable_finding_id("SEMGREP", f"{check_id}:{path}")
+
+    service = str(metadata.get("continuum_service") or infer_service_from_path(path))
+    finding_type = str(metadata.get("continuum_type") or "sast_finding")
+    continuum_severity = str(
+        metadata.get("continuum_severity") or semgrep_severity_to_continuum(severity)
+    )
+    confidence = str(metadata.get("continuum_confidence") or "medium")
+    scanner_family = str(metadata.get("continuum_scanner_family") or "sast")
+
+    return {
+        "finding_id": finding_id,
+        "source": "semgrep",
+        "scanner_family": scanner_family,
+        "type": finding_type,
+        "service": service,
+        "file": path,
+        "severity": continuum_severity,
+        "confidence": confidence,
+        "validation_status": "pending_validation",
+        "description": extra.get("message", "Semgrep finding normalized by Continuum Lab."),
+        "discovery_method": "semgrep_json_adapter",
+        "check_id": check_id,
+        "start": result.get("start", {}),
+        "end": result.get("end", {}),
+        "external_targeting": False,
+        "safe_lab_only": True,
+    }
+
+
+def discover_semgrep_results() -> list[dict[str, Any]]:
+    raw = load_json(SEMGREP_OUTPUT, {})
+    results = raw.get("results", []) if isinstance(raw, dict) else []
+
+    findings = []
+    for result in results:
+        if not isinstance(result, dict):
+            continue
+        findings.append(normalize_semgrep_result(result))
+
+    return findings
 
 
 def discover_sql_injection_marker() -> list[dict[str, Any]]:
@@ -124,17 +223,48 @@ def discover_secret_fixture_marker() -> list[dict[str, Any]]:
     ]
 
 
+def dedupe_findings(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    deduped: dict[str, dict[str, Any]] = {}
+
+    for finding in findings:
+        finding_id = str(finding.get("finding_id", ""))
+        if not finding_id:
+            continue
+
+        existing = deduped.get(finding_id)
+
+        # Prefer real scanner output over fallback static marker discovery.
+        if existing is None:
+            deduped[finding_id] = finding
+            continue
+
+        existing_source = str(existing.get("source", ""))
+        new_source = str(finding.get("source", ""))
+
+        if existing_source != "semgrep" and new_source == "semgrep":
+            deduped[finding_id] = finding
+
+    return [deduped[key] for key in sorted(deduped.keys())]
+
+
 def main() -> None:
     EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
 
     generated_at = datetime.now(timezone.utc).isoformat()
 
     findings: list[dict[str, Any]] = []
+
+    semgrep_findings = discover_semgrep_results()
+    findings.extend(semgrep_findings)
+
+    # Fallback keeps the lab runnable even before Semgrep has been run.
     findings.extend(discover_sql_injection_marker())
+
+    # Non-SAST demo sources remain local static markers for now.
     findings.extend(discover_dependency_marker())
     findings.extend(discover_secret_fixture_marker())
 
-    findings.sort(key=lambda item: item["finding_id"])
+    findings = dedupe_findings(findings)
 
     output = {
         "schema": "continuum-lab-normalized-findings/v0.1",
@@ -146,12 +276,21 @@ def main() -> None:
             "production_targeting": False,
             "real_credentials": False,
         },
+        "discovery_sources": {
+            "semgrep_output_present": SEMGREP_OUTPUT.exists(),
+            "semgrep_findings": len(semgrep_findings),
+            "static_fallback_enabled": True,
+        },
         "findings": findings,
     }
 
     write_json(EVIDENCE_DIR / "findings.json", output)
 
     print(f"Discovered {len(findings)} local lab findings.")
+    if semgrep_findings:
+        print(f"Semgrep adapter findings: {len(semgrep_findings)}")
+    else:
+        print("Semgrep adapter findings: 0. Static fallback used for SAST demo finding.")
     print(f"Wrote {EVIDENCE_DIR / 'findings.json'}")
 
 

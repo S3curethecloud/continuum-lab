@@ -139,3 +139,26 @@ The lab generates an executive-facing summary:
 - `evidence/demo-summary.md`
 
 This report summarizes the lab purpose, safety boundaries, discovery results, why `FIND-001` is prioritized as `P0`, remediation guidance, generated evidence artifacts, and recommended next phases.
+
+## Semgrep SAST Adapter
+
+The lab includes a Semgrep-style local SAST adapter.
+
+Rule file:
+
+- `scanners/semgrep/rules/continuum-lab-sast.yml`
+
+Run the scanner adapter:
+
+```bash
+./scanners/semgrep/run_semgrep.sh
+
+This writes:
+
+scanners/semgrep/semgrep-output.json
+
+Then rerun the lab:
+
+./run_lab.sh
+
+When Semgrep output is present, engine/ingest_findings.py normalizes Semgrep JSON into the Continuum Lab finding schema. If Semgrep output is not present, the lab falls back to static marker discovery so the demo remains runnable.

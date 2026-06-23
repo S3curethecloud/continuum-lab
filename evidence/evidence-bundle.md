@@ -1,6 +1,6 @@
 # Continuum Lab Evidence Bundle
 
-Generated: 2026-06-23T04:29:43.529163+00:00
+Generated: 2026-06-23T04:34:16.928143+00:00
 
 ## Scope
 
@@ -55,7 +55,7 @@ This evidence bundle was generated from local lab data only.
 - Severity: high
 - Risk score: 100
 - Validation status: confirmed_in_lab
-- Source: local-static-discovery
+- Source: semgrep
 - File: apps/vulnerable-node-api/src/routes/search.js
 - Recommended action: Prepare parameterized query patch, add regression test, and rerun validation in the lab.
 
@@ -74,7 +74,7 @@ Decision reasons:
 - +5: scanner confidence is high
 - +10: validation status is confirmed_in_lab
 
-Description: Unsafe SQL-style query construction marker found in local lab route.
+Description: Unsafe SQL-style query construction found in local lab code.
 
 ### FIND-002 - P2
 

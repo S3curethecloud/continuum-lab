@@ -2,6 +2,7 @@
   {
     "auth_required": false,
     "business_criticality": "tier_1",
+    "check_id": "scanners.semgrep.rules.continuum-lab.unsafe-sql-query-construction",
     "confidence": "high",
     "data_classification": "customer_pii",
     "decision_reasons": [
@@ -18,8 +19,13 @@
       "+5: scanner confidence is high",
       "+10: validation status is confirmed_in_lab"
     ],
-    "description": "Unsafe SQL-style query construction marker found in local lab route.",
-    "discovery_method": "static_marker_match",
+    "description": "Unsafe SQL-style query construction found in local lab code.",
+    "discovery_method": "semgrep_json_adapter",
+    "end": {
+      "col": 102,
+      "line": 44,
+      "offset": 1024
+    },
     "environment": "prod-like",
     "external_targeting": false,
     "file": "apps/vulnerable-node-api/src/routes/search.js",
@@ -33,7 +39,12 @@
     "scanner_family": "sast",
     "service": "customer-api",
     "severity": "high",
-    "source": "local-static-discovery",
+    "source": "semgrep",
+    "start": {
+      "col": 24,
+      "line": 44,
+      "offset": 946
+    },
     "type": "sql_injection",
     "validation_evidence": [
       "Finding maps to customer-api",

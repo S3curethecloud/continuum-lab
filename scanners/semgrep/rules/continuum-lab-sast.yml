@@ -1,0 +1,16 @@
+rules:
+  - id: continuum-lab.unsafe-sql-query-construction
+    languages:
+      - javascript
+    severity: ERROR
+    message: "Unsafe SQL-style query construction found in local lab code."
+    metadata:
+      continuum_finding_id: FIND-001
+      continuum_type: sql_injection
+      continuum_service: customer-api
+      continuum_severity: high
+      continuum_confidence: high
+      continuum_scanner_family: sast
+      safe_lab_only: true
+      external_targeting: false
+    pattern-regex: "SELECT\\s+.*\\+\\s*searchTerm\\s*\\+"
