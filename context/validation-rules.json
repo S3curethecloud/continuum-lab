@@ -1,0 +1,42 @@
+{
+  "rules": [
+    {
+      "finding_id": "FIND-001",
+      "validation_status": "confirmed_in_lab",
+      "method": "static_path_and_context_confirmation",
+      "evidence": [
+        "Finding maps to customer-api",
+        "Service is marked internet_reachable=true",
+        "Service is marked production_path=true",
+        "Finding type requires remediation review before any enforcement"
+      ],
+      "safe_validation_only": true,
+      "external_targeting": false
+    },
+    {
+      "finding_id": "FIND-002",
+      "validation_status": "unconfirmed",
+      "method": "context_review_only",
+      "evidence": [
+        "Finding maps to admin-worker",
+        "Service is marked dev",
+        "Service is not internet reachable",
+        "No lab runtime validation has been executed"
+      ],
+      "safe_validation_only": true,
+      "external_targeting": false
+    },
+    {
+      "finding_id": "FIND-003",
+      "validation_status": "likely_test_fixture",
+      "method": "fixture_classification",
+      "evidence": [
+        "Finding path contains test/fixtures",
+        "Scanner confidence is low",
+        "Finding is treated as low-priority unless new evidence appears"
+      ],
+      "safe_validation_only": true,
+      "external_targeting": false
+    }
+  ]
+}

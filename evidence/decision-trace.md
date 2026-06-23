@@ -1,6 +1,6 @@
 # Decision Trace
 
-Generated: 2026-06-23T03:08:06.202880+00:00
+Generated: 2026-06-23T03:09:33.565720+00:00
 
 This file records why each finding received its priority.
 
@@ -9,7 +9,7 @@ This file records why each finding received its priority.
 - Service: customer-api
 - Severity: high
 - Risk score: 100
-- Validation: pending_validation
+- Validation: confirmed_in_lab
 
 Decision reasons:
 
@@ -24,7 +24,7 @@ Decision reasons:
 - +8: service identity is marked over-permissive
 - +5: privilege level is high
 - +5: scanner confidence is high
-- +0: validation status is pending_validation
+- +10: validation status is confirmed_in_lab
 
 ## FIND-002 - P2
 

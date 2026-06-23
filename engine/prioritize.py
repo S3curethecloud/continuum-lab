@@ -351,6 +351,23 @@ def main() -> None:
     findings_raw = load_json(EVIDENCE_DIR / "findings.json", [])
     findings = normalize_findings(findings_raw)
 
+    validation_raw = load_json(EVIDENCE_DIR / "validation-results.json", {"results": []})
+    validation_results = {}
+    if isinstance(validation_raw, dict):
+        for result in validation_raw.get("results", []):
+            if isinstance(result, dict) and result.get("finding_id"):
+                validation_results[result["finding_id"]] = result
+
+    for finding in findings:
+        validation = validation_results.get(finding.get("finding_id"))
+        if validation:
+            finding["validation_status"] = validation.get(
+                "validation_status",
+                finding.get("validation_status", "pending_validation")
+            )
+            finding["validation_evidence"] = validation.get("evidence", [])
+            finding["validation_method"] = validation.get("method", "unspecified")
+
     assets = index_services(load_json(CONTEXT_DIR / "assets.json", {"services": []}))
     network = index_services(load_json(CONTEXT_DIR / "network-topology.json", {"services": []}))
     business = index_services(

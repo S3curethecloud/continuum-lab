@@ -1,6 +1,6 @@
 # Continuum Lab Evidence Bundle
 
-Generated: 2026-06-23T03:08:06.224628+00:00
+Generated: 2026-06-23T03:09:33.589935+00:00
 
 ## Scope
 
@@ -35,8 +35,8 @@ This evidence bundle was generated from local lab data only.
 
 | Validation Status | Count |
 |---|---:|
+| confirmed_in_lab | 1 |
 | likely_test_fixture | 1 |
-| pending_validation | 1 |
 | unconfirmed | 1 |
 
 ## Service Distribution
@@ -54,10 +54,10 @@ This evidence bundle was generated from local lab data only.
 - Type: sql_injection
 - Severity: high
 - Risk score: 100
-- Validation status: pending_validation
+- Validation status: confirmed_in_lab
 - Source: semgrep
 - File: apps/vulnerable-node-api/src/routes/search.js
-- Recommended action: Run lab-only validation before remediation. Do not apply production changes.
+- Recommended action: Prepare parameterized query patch, add regression test, and rerun validation in the lab.
 
 Decision reasons:
 
@@ -72,7 +72,7 @@ Decision reasons:
 - +8: service identity is marked over-permissive
 - +5: privilege level is high
 - +5: scanner confidence is high
-- +0: validation status is pending_validation
+- +10: validation status is confirmed_in_lab
 
 Description: Potential unsafe query construction in customer search route.
 

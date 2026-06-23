@@ -16,7 +16,7 @@
       "+8: service identity is marked over-permissive",
       "+5: privilege level is high",
       "+5: scanner confidence is high",
-      "+0: validation status is pending_validation"
+      "+10: validation status is confirmed_in_lab"
     ],
     "description": "Potential unsafe query construction in customer search route.",
     "environment": "prod-like",
@@ -31,7 +31,14 @@
     "severity": "high",
     "source": "semgrep",
     "type": "sql_injection",
-    "validation_status": "pending_validation"
+    "validation_evidence": [
+      "Finding maps to customer-api",
+      "Service is marked internet_reachable=true",
+      "Service is marked production_path=true",
+      "Finding type requires remediation review before any enforcement"
+    ],
+    "validation_method": "static_path_and_context_confirmation",
+    "validation_status": "confirmed_in_lab"
   },
   {
     "auth_required": true,
@@ -60,6 +67,13 @@
     "severity": "critical",
     "source": "trivy",
     "type": "vulnerable_dependency",
+    "validation_evidence": [
+      "Finding maps to admin-worker",
+      "Service is marked dev",
+      "Service is not internet reachable",
+      "No lab runtime validation has been executed"
+    ],
+    "validation_method": "context_review_only",
     "validation_status": "unconfirmed"
   },
   {
@@ -95,6 +109,12 @@
     "severity": "medium",
     "source": "gitleaks",
     "type": "secret_detection",
+    "validation_evidence": [
+      "Finding path contains test/fixtures",
+      "Scanner confidence is low",
+      "Finding is treated as low-priority unless new evidence appears"
+    ],
+    "validation_method": "fixture_classification",
     "validation_status": "likely_test_fixture"
   }
 ]
