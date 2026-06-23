@@ -13,7 +13,7 @@ Discovery -> Prioritization -> Validation -> Remediation -> Evidence
 
 ## Purpose
 
-This lab is designed to study the next generation of security operations where scanner findings are enriched with environment context, validated safely, prioritized by business risk, and turned into evidence-backed remediation plans.
+This lab studies the next generation of security operations where scanner findings are enriched with environment context, validated safely, prioritized by business risk, mapped to remediation guidance, and packaged into evidence-backed artifacts.
 
 ## Safety Boundaries
 
@@ -26,31 +26,42 @@ This lab is for local, controlled testing only.
 - No live cloud mutation by default
 - All validation must run inside controlled lab services
 
-## Lab Phases
-
-1. Discovery
-2. Context enrichment
-3. Risk prioritization
-4. Safe validation
-5. Remediation recommendation
-6. Evidence generation
-7. Trust-mode controls
-
-## Directory Layout
+## Current v0.1 Workflow
 
 ```text
-apps/          Intentionally vulnerable local demo apps
-context/       Synthetic cloud, network, identity, and business context
-scanners/      Scanner configuration and adapters
-engine/        Reasoning, scoring, validation, and evidence scripts
-evidence/      Generated findings, reports, and decision traces
-policies/      Learn, assist, and lab-only enforce mode controls
-Trust Modes
-Mode	Behavior
-learn	Generate findings and recommendations only
-assist	Generate suggested patches or remediation plans for review
-enforce-lab-only	Apply safe, reversible changes only inside the lab
-Run the Lab
+local scanner outputs and lab files
+  -> normalized discovery findings
+  -> lab-only validation
+  -> context-aware prioritization
+  -> remediation recommendation
+  -> evidence bundle
+  -> executive demo summary
+Run the Full Demo
+
+Run all scanner adapters and the full reasoning/evidence pipeline:
+
+./run_demo.sh
+
+This runs:
+
+Semgrep SAST adapter
+Gitleaks secret scanning adapter
+Dependency-audit adapter
+Discovery ingestion
+Lab-only validation
+Context-aware prioritization
+Remediation recommendation
+Evidence generation
+Executive demo summary generation
+Run Scanners Only
+./run_scanners.sh
+
+This generates:
+
+scanners/semgrep/semgrep-output.json
+scanners/gitleaks/gitleaks-output.json
+scanners/dependency-audit/dependency-audit-output.json
+Run Reasoning and Evidence Pipeline Only
 ./run_lab.sh
 
 This generates:
@@ -64,14 +75,24 @@ evidence/remediation-plan.json
 evidence/remediation-plan.md
 evidence/evidence-bundle.json
 evidence/evidence-bundle.md
-Current v0.1 Workflow
-local lab files
-  -> normalized discovery findings
-  -> lab-only validation
-  -> context-aware prioritization
-  -> decision trace
-  -> remediation plan
-  -> evidence bundle
+evidence/demo-summary.md
+Scanner Adapter Triad
+Scanner Adapter	Finding	Expected Outcome	Purpose
+Semgrep	FIND-001	P0	SAST finding escalates because it is customer-facing, reachable, sensitive, and validated
+Dependency audit	FIND-002	P2	Critical dependency stays below P0 because it is dev/internal/non-reachable
+Gitleaks	FIND-003	P4	Secret-like scanner hit is capped because validation classifies it as a likely test fixture
+Directory Layout
+apps/          Intentionally vulnerable local demo apps
+context/       Synthetic cloud, network, identity, and business context
+scanners/      Scanner configuration, runners, and raw scanner outputs
+engine/        Ingestion, validation, prioritization, remediation, and evidence scripts
+evidence/      Generated findings, reports, summaries, and decision traces
+policies/      Learn, assist, and lab-only enforce mode controls
+Trust Modes
+Mode	Behavior
+learn	Generate findings and recommendations only
+assist	Generate suggested patches or remediation plans for review
+enforce-lab-only	Apply safe, reversible changes only inside the lab
 Local Vulnerable Node API
 
 The first local lab service is:
@@ -84,7 +105,7 @@ Run it with:
 
 docker compose up --build vulnerable-node-api
 
-In another terminal, verify health:
+Verify health:
 
 curl http://127.0.0.1:3001/health
 
@@ -102,22 +123,57 @@ No external targets
 No production remediation
 Discovery Phase
 
-The discovery phase uses a local static ingester:
+The discovery phase uses engine/ingest_findings.py to normalize scanner outputs and local lab findings into one schema:
 
 python3 engine/ingest_findings.py
 
-It inspects local lab files and generates:
+Current discovery sources:
 
-evidence/findings.json
+Source	Output
+Semgrep	scanners/semgrep/semgrep-output.json
+Gitleaks	scanners/gitleaks/gitleaks-output.json
+Dependency audit	scanners/dependency-audit/dependency-audit-output.json
+Static fallback	Local lab marker discovery when scanner output is missing
+Semgrep SAST Adapter
 
-Current local discovery targets:
+Rule file:
 
-Finding	Source File	Purpose
-FIND-001	apps/vulnerable-node-api/src/routes/search.js	Unsafe SQL-style query construction marker
-FIND-002	apps/vulnerable-python-api/requirements.txt	Outdated dependency marker
-FIND-003	apps/vulnerable-node-api/test/fixtures/example.env	Secret-like test fixture marker
+scanners/semgrep/rules/continuum-lab-sast.yml
 
-The discovery ingester is local-only. It does not scan external systems, call cloud APIs, exploit targets, or mutate resources.
+Run:
+
+./scanners/semgrep/run_semgrep.sh
+
+Expected normalized result:
+
+Semgrep -> FIND-001 -> P0
+Gitleaks Secret Scanning Adapter
+
+Config file:
+
+scanners/gitleaks/gitleaks.toml
+
+Run:
+
+./scanners/gitleaks/run_gitleaks.sh
+
+Expected normalized result:
+
+Gitleaks -> FIND-003 -> P4
+
+The validation layer classifies the fake fixture secret as likely_test_fixture, and prioritization caps the risk score.
+
+Dependency Scanning Adapter
+
+Runner:
+
+./scanners/dependency-audit/run_dependency_audit.sh
+
+Expected normalized result:
+
+Dependency audit -> FIND-002 -> P2
+
+The finding remains P2 instead of P0 because context shows the affected service is dev, internal, not internet reachable, and protected by compensating controls.
 
 Remediation Phase
 
@@ -128,87 +184,14 @@ evidence/remediation-plan.md
 
 The remediation engine does not patch code, mutate cloud resources, target external systems, or perform autonomous production enforcement.
 
-Status
-
-v0.1 local discovery, validation, prioritization, remediation recommendation, and evidence generation are working.
-
-## Demo Summary
+Demo Summary
 
 The lab generates an executive-facing summary:
 
-- `evidence/demo-summary.md`
+evidence/demo-summary.md
 
-This report summarizes the lab purpose, safety boundaries, discovery results, why `FIND-001` is prioritized as `P0`, remediation guidance, generated evidence artifacts, and recommended next phases.
+This report summarizes the lab purpose, safety boundaries, discovery results, why FIND-001 is prioritized as P0, why other findings are not escalated, remediation guidance, generated evidence artifacts, and recommended next phases.
 
-## Semgrep SAST Adapter
+Status
 
-The lab includes a Semgrep-style local SAST adapter.
-
-Rule file:
-
-- `scanners/semgrep/rules/continuum-lab-sast.yml`
-
-Run the scanner adapter:
-
-```bash
-./scanners/semgrep/run_semgrep.sh
-
-This writes:
-
-scanners/semgrep/semgrep-output.json
-
-Then rerun the lab:
-
-./run_lab.sh
-
-When Semgrep output is present, engine/ingest_findings.py normalizes Semgrep JSON into the Continuum Lab finding schema. If Semgrep output is not present, the lab falls back to static marker discovery so the demo remains runnable.
-
-## Gitleaks Secret Scanning Adapter
-
-The lab includes a Gitleaks-style local secret scanning adapter.
-
-Config file:
-
-- `scanners/gitleaks/gitleaks.toml`
-
-Run the scanner adapter:
-
-```bash
-./scanners/gitleaks/run_gitleaks.sh
-
-This writes:
-
-scanners/gitleaks/gitleaks-output.json
-
-Then rerun the lab:
-
-./run_lab.sh
-
-When Gitleaks output is present, engine/ingest_findings.py normalizes Gitleaks JSON into the Continuum Lab finding schema. The current demo maps the fake fixture secret to FIND-003. The validation layer then classifies it as likely_test_fixture, and prioritization caps the risk score to P4.
-
-This demonstrates that scanner findings should be validated and contextualized before being escalated.
-
-## Dependency Scanning Adapter
-
-The lab includes a local dependency-audit adapter for dependency-risk discovery.
-
-Runner:
-
-```bash
-./scanners/dependency-audit/run_dependency_audit.sh
-
-This writes:
-
-scanners/dependency-audit/dependency-audit-output.json
-
-Then rerun the lab:
-
-./run_lab.sh
-
-When dependency-audit output is present, engine/ingest_findings.py normalizes dependency findings into the Continuum Lab finding schema. The current demo maps the intentionally outdated Django requirement to FIND-002.
-
-Expected outcome:
-
-Dependency adapter -> FIND-002 -> P2
-
-The finding remains P2 instead of P0 because context shows the affected service is dev, internal, not internet reachable, and protected by compensating controls.
+v0.1 scanner triad, local discovery ingestion, validation, prioritization, remediation recommendation, evidence generation, and executive demo summary are working.

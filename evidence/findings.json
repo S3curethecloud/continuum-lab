@@ -85,7 +85,7 @@
       "validation_status": "pending_validation"
     }
   ],
-  "generated_at": "2026-06-23T04:43:32.686736+00:00",
+  "generated_at": "2026-06-23T04:47:26.489600+00:00",
   "schema": "continuum-lab-normalized-findings/v0.1",
   "scope": {
     "cloud_mutation": false,
