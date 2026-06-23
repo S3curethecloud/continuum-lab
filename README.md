@@ -59,6 +59,8 @@ This generates:
 - `evidence/prioritized-findings.json`
 - `evidence/prioritized-risk-register.md`
 - `evidence/decision-trace.md`
+- `evidence/remediation-plan.json`
+- `evidence/remediation-plan.md`
 - `evidence/evidence-bundle.json`
 - `evidence/evidence-bundle.md`
 
@@ -69,9 +71,19 @@ normalized findings
   -> synthetic context
   -> context-aware prioritization
   -> decision trace
+  -> remediation plan
   -> evidence bundle
 ```
 
 ## Status
 
 Initial reasoning and evidence-generation scaffold in progress.
+
+## Remediation Phase
+
+The remediation phase generates recommendation-only artifacts:
+
+- `evidence/remediation-plan.json`
+- `evidence/remediation-plan.md`
+
+The remediation engine does not patch code, mutate cloud resources, target external systems, or perform autonomous production enforcement.
