@@ -162,3 +162,28 @@ Then rerun the lab:
 ./run_lab.sh
 
 When Semgrep output is present, engine/ingest_findings.py normalizes Semgrep JSON into the Continuum Lab finding schema. If Semgrep output is not present, the lab falls back to static marker discovery so the demo remains runnable.
+
+## Gitleaks Secret Scanning Adapter
+
+The lab includes a Gitleaks-style local secret scanning adapter.
+
+Config file:
+
+- `scanners/gitleaks/gitleaks.toml`
+
+Run the scanner adapter:
+
+```bash
+./scanners/gitleaks/run_gitleaks.sh
+
+This writes:
+
+scanners/gitleaks/gitleaks-output.json
+
+Then rerun the lab:
+
+./run_lab.sh
+
+When Gitleaks output is present, engine/ingest_findings.py normalizes Gitleaks JSON into the Continuum Lab finding schema. The current demo maps the fake fixture secret to FIND-003. The validation layer then classifies it as likely_test_fixture, and prioritization caps the risk score to P4.
+
+This demonstrates that scanner findings should be validated and contextualized before being escalated.

@@ -1,0 +1,19 @@
+title = "Continuum Lab Gitleaks Config"
+
+[allowlist]
+description = "Continuum Lab allowlist is intentionally minimal."
+paths = []
+
+[[rules]]
+id = "continuum-lab.fake-api-key-fixture"
+description = "Continuum Lab fake API key fixture marker"
+regex = '''LAB_FAKE_API_KEY\s*=\s*[A-Za-z0-9._\-]+'''
+secretGroup = 0
+entropy = 0.0
+keywords = [
+  "LAB_FAKE_API_KEY"
+]
+
+[rules.allowlist]
+description = "No allowlist for this lab rule; validation layer decides fixture status."
+paths = []

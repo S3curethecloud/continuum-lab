@@ -27,6 +27,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_DIR = ROOT / "evidence"
 SEMGREP_OUTPUT = ROOT / "scanners/semgrep/semgrep-output.json"
+GITLEAKS_OUTPUT = ROOT / "scanners/gitleaks/gitleaks-output.json"
 
 
 def load_json(path: Path, default: Any) -> Any:
@@ -128,6 +129,65 @@ def discover_semgrep_results() -> list[dict[str, Any]]:
         if not isinstance(result, dict):
             continue
         findings.append(normalize_semgrep_result(result))
+
+    return findings
+
+
+def normalize_gitleaks_result(result: dict[str, Any]) -> dict[str, Any]:
+    rule_id = str(result.get("RuleID") or result.get("ruleID") or "gitleaks.unknown")
+    file_path = str(result.get("File") or result.get("file") or "unknown")
+
+    # The lab intentionally maps the fixture rule to FIND-003 so validation can
+    # classify it as likely_test_fixture and cap priority.
+    if rule_id == "continuum-lab.fake-api-key-fixture":
+        finding_id = "FIND-003"
+    else:
+        finding_id = stable_finding_id("GITLEAKS", f"{rule_id}:{file_path}")
+
+    return {
+        "finding_id": finding_id,
+        "source": "gitleaks",
+        "scanner_family": "secret",
+        "type": "secret_detection",
+        "service": infer_service_from_path(file_path),
+        "file": file_path,
+        "severity": "medium",
+        "confidence": "medium",
+        "validation_status": "pending_validation",
+        "description": result.get("Description", "Gitleaks secret finding normalized by Continuum Lab."),
+        "discovery_method": "gitleaks_json_adapter",
+        "rule_id": rule_id,
+        "start": {
+            "line": result.get("StartLine"),
+            "column": result.get("StartColumn"),
+        },
+        "end": {
+            "line": result.get("EndLine"),
+            "column": result.get("EndColumn"),
+        },
+        "fingerprint": result.get("Fingerprint", ""),
+        "redacted": True,
+        "external_targeting": False,
+        "safe_lab_only": True,
+    }
+
+
+def discover_gitleaks_results() -> list[dict[str, Any]]:
+    raw = load_json(GITLEAKS_OUTPUT, [])
+
+    # Gitleaks JSON reports are commonly a list of finding objects.
+    if isinstance(raw, list):
+        results = raw
+    elif isinstance(raw, dict) and isinstance(raw.get("findings"), list):
+        results = raw["findings"]
+    else:
+        results = []
+
+    findings = []
+    for result in results:
+        if not isinstance(result, dict):
+            continue
+        findings.append(normalize_gitleaks_result(result))
 
     return findings
 
@@ -255,13 +315,18 @@ def main() -> None:
     findings: list[dict[str, Any]] = []
 
     semgrep_findings = discover_semgrep_results()
-    findings.extend(semgrep_findings)
+    gitleaks_findings = discover_gitleaks_results()
 
-    # Fallback keeps the lab runnable even before Semgrep has been run.
+    findings.extend(semgrep_findings)
+    findings.extend(gitleaks_findings)
+
+    # Fallback keeps the lab runnable even before scanner adapters have been run.
     findings.extend(discover_sql_injection_marker())
 
-    # Non-SAST demo sources remain local static markers for now.
+    # Dependency demo source remains a local static marker for now.
     findings.extend(discover_dependency_marker())
+
+    # Secret fixture fallback remains available until Gitleaks output exists.
     findings.extend(discover_secret_fixture_marker())
 
     findings = dedupe_findings(findings)
@@ -279,6 +344,8 @@ def main() -> None:
         "discovery_sources": {
             "semgrep_output_present": SEMGREP_OUTPUT.exists(),
             "semgrep_findings": len(semgrep_findings),
+            "gitleaks_output_present": GITLEAKS_OUTPUT.exists(),
+            "gitleaks_findings": len(gitleaks_findings),
             "static_fallback_enabled": True,
         },
         "findings": findings,
@@ -291,6 +358,12 @@ def main() -> None:
         print(f"Semgrep adapter findings: {len(semgrep_findings)}")
     else:
         print("Semgrep adapter findings: 0. Static fallback used for SAST demo finding.")
+
+    if gitleaks_findings:
+        print(f"Gitleaks adapter findings: {len(gitleaks_findings)}")
+    else:
+        print("Gitleaks adapter findings: 0. Static fallback used for secret fixture demo finding.")
+
     print(f"Wrote {EVIDENCE_DIR / 'findings.json'}")
 
 
