@@ -4,6 +4,13 @@ A safe, local, provider-neutral lab for emulating a modern security reasoning lo
 
 Discovery -> Prioritization -> Validation -> Remediation -> Evidence
 
+## Quick Links
+
+- [Executive Demo Summary](evidence/demo-summary.md)
+- [Prioritized Risk Register](evidence/prioritized-risk-register.md)
+- [Remediation Plan](evidence/remediation-plan.md)
+- [Evidence Bundle](evidence/evidence-bundle.md)
+
 ## Purpose
 
 This lab is designed to study the next generation of security operations where scanner findings are enriched with environment context, validated safely, prioritized by business risk, and turned into evidence-backed remediation plans.
