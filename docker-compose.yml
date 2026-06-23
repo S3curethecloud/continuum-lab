@@ -1,0 +1,14 @@
+services:
+  vulnerable-node-api:
+    build:
+      context: ./apps/vulnerable-node-api
+    container_name: continuum-lab-vulnerable-node-api
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "127.0.0.1:3001:3000"
+    labels:
+      continuum.lab.service: "customer-api"
+      continuum.lab.external_targeting: "false"
+      continuum.lab.production: "false"

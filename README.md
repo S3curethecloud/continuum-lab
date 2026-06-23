@@ -87,3 +87,33 @@ The remediation phase generates recommendation-only artifacts:
 - `evidence/remediation-plan.md`
 
 The remediation engine does not patch code, mutate cloud resources, target external systems, or perform autonomous production enforcement.
+
+## Local Vulnerable Node API
+
+The first local lab service is:
+
+```text
+apps/vulnerable-node-api/
+
+It provides a local-only Express API for demonstrating unsafe SQL-style query construction.
+
+Run it with:
+
+docker compose up --build vulnerable-node-api
+
+In another terminal, verify health:
+
+curl http://127.0.0.1:3001/health
+
+Example local search route:
+
+curl "http://127.0.0.1:3001/api/customers/search?q=Ada"
+
+Safety boundaries:
+
+Local-only Docker service
+No real database
+No real customer data
+No real credentials
+No external targets
+No production remediation
