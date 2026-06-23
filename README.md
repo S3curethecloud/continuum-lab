@@ -1,0 +1,48 @@
+# Continuum Lab
+
+A safe, local, provider-neutral lab for emulating a modern security reasoning loop:
+
+Discovery -> Prioritization -> Validation -> Remediation -> Evidence
+
+## Purpose
+
+This lab is designed to study the next generation of security operations where scanner findings are enriched with environment context, validated safely, prioritized by business risk, and turned into evidence-backed remediation plans.
+
+## Safety Boundaries
+
+This lab is for local, controlled testing only.
+
+- No production targets
+- No external exploitation
+- No real credentials
+- No autonomous production remediation
+- No live cloud mutation by default
+- All validation must run inside controlled lab services
+
+## Lab Phases
+
+1. Discovery
+2. Context enrichment
+3. Risk prioritization
+4. Safe validation
+5. Remediation recommendation
+6. Evidence generation
+7. Trust-mode controls
+
+## Directory Layout
+
+```text
+apps/          Intentionally vulnerable local demo apps
+context/       Synthetic cloud, network, identity, and business context
+scanners/      Scanner configuration and adapters
+engine/        Reasoning, scoring, validation, and evidence scripts
+evidence/      Generated findings, reports, and decision traces
+policies/      Learn, assist, and lab-only enforce mode controls
+Trust Modes
+Mode	Behavior
+learn	Generate findings and recommendations only
+assist	Generate suggested patches or remediation plans for review
+enforce-lab-only	Apply safe, reversible changes only inside the lab
+Status
+
+Initial scaffold complete.

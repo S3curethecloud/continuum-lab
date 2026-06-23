@@ -1,0 +1,13 @@
+mode: learn
+description: "Generate findings, context, risk scores, and recommendations only."
+allow_actions:
+  scan: true
+  enrich_context: true
+  prioritize: true
+  validate_in_lab: true
+  recommend_fix: true
+  generate_evidence: true
+  apply_patch: false
+  mutate_cloud: false
+  external_targeting: false
+human_approval_required: true

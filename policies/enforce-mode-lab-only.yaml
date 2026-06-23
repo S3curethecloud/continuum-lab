@@ -1,0 +1,16 @@
+mode: enforce-lab-only
+description: "Apply safe, reversible remediations inside local lab services only."
+allow_actions:
+  scan: true
+  enrich_context: true
+  prioritize: true
+  validate_in_lab: true
+  recommend_fix: true
+  generate_evidence: true
+  create_patch_suggestion: true
+  apply_patch_in_lab: true
+  mutate_cloud: false
+  external_targeting: false
+human_approval_required: true
+scope:
+  allowed_environment: local_lab_only
