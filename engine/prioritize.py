@@ -230,6 +230,20 @@ def prioritize_finding(
     else:
         reasons.append(f"+0: validation status is {validation_status}")
 
+    validation_score_caps = {
+        "false_positive": 10,
+        "not_reproducible": 20,
+        "likely_test_fixture": 25,
+        "test_fixture": 25,
+    }
+
+    validation_cap = validation_score_caps.get(validation_status)
+    if validation_cap is not None and score > validation_cap:
+        reasons.append(
+            f"cap: validation status {validation_status} limits score to {validation_cap}"
+        )
+        score = validation_cap
+
     score = max(0, min(100, score))
     priority = priority_from_score(score)
 
