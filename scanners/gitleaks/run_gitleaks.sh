@@ -44,15 +44,16 @@ fi
 
 set -e
 
-# Gitleaks returns a non-zero code when leaks are found.
-# In this lab, findings are expected and are not treated as runner failure.
+# Gitleaks commonly returns 1 when leaks are found.
+# For this lab, findings are expected, but a missing report is not acceptable.
+if [ ! -f "$OUTPUT" ]; then
+  echo "ERROR: Gitleaks did not create $OUTPUT. Check config or scanner output." >&2
+  exit 1
+fi
+
 if [ "$status" -ne 0 ] && [ "$status" -ne 1 ]; then
   echo "ERROR: Gitleaks runner failed with status $status" >&2
   exit "$status"
-fi
-
-if [ ! -f "$OUTPUT" ]; then
-  echo "[]" > "$OUTPUT"
 fi
 
 echo "Gitleaks-style scan complete."

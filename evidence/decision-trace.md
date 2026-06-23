@@ -1,6 +1,6 @@
 # Decision Trace
 
-Generated: 2026-06-23T04:38:04.759273+00:00
+Generated: 2026-06-23T04:40:06.688337+00:00
 
 This file records why each finding received its priority.
 
@@ -62,6 +62,5 @@ Decision reasons:
 - +15: regulated data present
 - +8: service identity is marked over-permissive
 - +5: privilege level is high
-- -5: scanner confidence is low
 - -25: validation status is likely_test_fixture
 - cap: validation status likely_test_fixture limits score to 25

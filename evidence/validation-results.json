@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-23T04:38:04.727732+00:00",
+  "generated_at": "2026-06-23T04:40:06.662727+00:00",
   "results": [
     {
       "evidence": [
@@ -16,7 +16,7 @@
       "service": "customer-api",
       "source": "semgrep",
       "type": "sql_injection",
-      "validated_at": "2026-06-23T04:38:04.727732+00:00",
+      "validated_at": "2026-06-23T04:40:06.662727+00:00",
       "validation_status": "confirmed_in_lab"
     },
     {
@@ -34,7 +34,7 @@
       "service": "admin-worker",
       "source": "local-static-discovery",
       "type": "vulnerable_dependency",
-      "validated_at": "2026-06-23T04:38:04.727732+00:00",
+      "validated_at": "2026-06-23T04:40:06.662727+00:00",
       "validation_status": "unconfirmed"
     },
     {
@@ -49,9 +49,9 @@
       "method": "fixture_classification",
       "safe_validation_only": true,
       "service": "customer-api",
-      "source": "local-static-discovery",
+      "source": "gitleaks",
       "type": "secret_detection",
-      "validated_at": "2026-06-23T04:38:04.727732+00:00",
+      "validated_at": "2026-06-23T04:40:06.662727+00:00",
       "validation_status": "likely_test_fixture"
     }
   ],

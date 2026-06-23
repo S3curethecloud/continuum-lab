@@ -1,1 +1,22 @@
-[]
+[
+ {
+  "RuleID": "continuum-lab.fake-api-key-fixture",
+  "Description": "Continuum Lab fake API key fixture marker",
+  "StartLine": 3,
+  "EndLine": 3,
+  "StartColumn": 2,
+  "EndColumn": 63,
+  "Match": "LAB_FAKE_API_KEY=not-a-real-secret-used-for-local-testing-only",
+  "Secret": "LAB_FAKE_API_KEY=not-a-real-secret-used-for-local-testing-only",
+  "File": "apps/vulnerable-node-api/test/fixtures/example.env",
+  "SymlinkFile": "",
+  "Commit": "",
+  "Entropy": 4.435826,
+  "Author": "",
+  "Email": "",
+  "Date": "",
+  "Message": "",
+  "Tags": [],
+  "Fingerprint": "apps/vulnerable-node-api/test/fixtures/example.env:continuum-lab.fake-api-key-fixture:3"
+ }
+]

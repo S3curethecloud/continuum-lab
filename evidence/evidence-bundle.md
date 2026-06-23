@@ -1,6 +1,6 @@
 # Continuum Lab Evidence Bundle
 
-Generated: 2026-06-23T04:38:04.821689+00:00
+Generated: 2026-06-23T04:40:06.748181+00:00
 
 ## Scope
 
@@ -106,7 +106,7 @@ Description: Outdated dependency marker found in local lab requirements file.
 - Severity: medium
 - Risk score: 25
 - Validation status: likely_test_fixture
-- Source: local-static-discovery
+- Source: gitleaks
 - File: apps/vulnerable-node-api/test/fixtures/example.env
 - Recommended action: Keep as low priority, document fixture status, and ensure test secrets cannot be mistaken for real secrets.
 
@@ -122,11 +122,10 @@ Decision reasons:
 - +15: regulated data present
 - +8: service identity is marked over-permissive
 - +5: privilege level is high
-- -5: scanner confidence is low
 - -25: validation status is likely_test_fixture
 - cap: validation status likely_test_fixture limits score to 25
 
-Description: Secret-like string found in a local test fixture.
+Description: Continuum Lab fake API key fixture marker
 
 
 ## Trust Boundary

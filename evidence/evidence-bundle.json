@@ -101,7 +101,7 @@
     {
       "auth_required": false,
       "business_criticality": "tier_1",
-      "confidence": "low",
+      "confidence": "medium",
       "data_classification": "customer_pii",
       "decision_reasons": [
         "+45: base severity is medium",
@@ -114,27 +114,37 @@
         "+15: regulated data present",
         "+8: service identity is marked over-permissive",
         "+5: privilege level is high",
-        "-5: scanner confidence is low",
         "-25: validation status is likely_test_fixture",
         "cap: validation status likely_test_fixture limits score to 25"
       ],
-      "description": "Secret-like string found in a local test fixture.",
-      "discovery_method": "static_secret_fixture_marker_match",
+      "description": "Continuum Lab fake API key fixture marker",
+      "discovery_method": "gitleaks_json_adapter",
+      "end": {
+        "column": 63,
+        "line": 3
+      },
       "environment": "prod-like",
       "external_targeting": false,
       "file": "apps/vulnerable-node-api/test/fixtures/example.env",
       "finding_id": "FIND-003",
+      "fingerprint": "apps/vulnerable-node-api/test/fixtures/example.env:continuum-lab.fake-api-key-fixture:3",
       "has_waf": false,
       "internet_reachable": true,
       "priority": "P4",
       "production_path": true,
       "recommended_action": "Keep as low priority, document fixture status, and ensure test secrets cannot be mistaken for real secrets.",
+      "redacted": true,
       "risk_score": 25,
+      "rule_id": "continuum-lab.fake-api-key-fixture",
       "safe_lab_only": true,
       "scanner_family": "secret",
       "service": "customer-api",
       "severity": "medium",
-      "source": "local-static-discovery",
+      "source": "gitleaks",
+      "start": {
+        "column": 2,
+        "line": 3
+      },
       "type": "secret_detection",
       "validation_evidence": [
         "Finding path contains test/fixtures",
@@ -145,7 +155,7 @@
       "validation_status": "likely_test_fixture"
     }
   ],
-  "generated_at": "2026-06-23T04:38:04.821689+00:00",
+  "generated_at": "2026-06-23T04:40:06.748181+00:00",
   "policy_files": {
     "assist": "mode: assist\ndescription: \"Generate remediation plans and optional patch suggestions for human review.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  create_patch_suggestion: true\n  apply_patch: false\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true",
     "enforce_lab_only": "mode: enforce-lab-only\ndescription: \"Apply safe, reversible remediations inside local lab services only.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  create_patch_suggestion: true\n  apply_patch_in_lab: true\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true\nscope:\n  allowed_environment: local_lab_only",

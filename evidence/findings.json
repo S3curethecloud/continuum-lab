@@ -1,6 +1,6 @@
 {
   "discovery_sources": {
-    "gitleaks_findings": 0,
+    "gitleaks_findings": 1,
     "gitleaks_output_present": true,
     "semgrep_findings": 1,
     "semgrep_output_present": true,
@@ -49,22 +49,33 @@
       "validation_status": "unconfirmed"
     },
     {
-      "confidence": "low",
-      "description": "Secret-like string found in a local test fixture.",
-      "discovery_method": "static_secret_fixture_marker_match",
+      "confidence": "medium",
+      "description": "Continuum Lab fake API key fixture marker",
+      "discovery_method": "gitleaks_json_adapter",
+      "end": {
+        "column": 63,
+        "line": 3
+      },
       "external_targeting": false,
       "file": "apps/vulnerable-node-api/test/fixtures/example.env",
       "finding_id": "FIND-003",
+      "fingerprint": "apps/vulnerable-node-api/test/fixtures/example.env:continuum-lab.fake-api-key-fixture:3",
+      "redacted": true,
+      "rule_id": "continuum-lab.fake-api-key-fixture",
       "safe_lab_only": true,
       "scanner_family": "secret",
       "service": "customer-api",
       "severity": "medium",
-      "source": "local-static-discovery",
+      "source": "gitleaks",
+      "start": {
+        "column": 2,
+        "line": 3
+      },
       "type": "secret_detection",
-      "validation_status": "likely_test_fixture"
+      "validation_status": "pending_validation"
     }
   ],
-  "generated_at": "2026-06-23T04:38:04.698815+00:00",
+  "generated_at": "2026-06-23T04:40:06.637761+00:00",
   "schema": "continuum-lab-normalized-findings/v0.1",
   "scope": {
     "cloud_mutation": false,
