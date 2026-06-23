@@ -1,6 +1,6 @@
 # Decision Trace
 
-Generated: 2026-06-23T04:24:23.998431+00:00
+Generated: 2026-06-23T04:27:10.841364+00:00
 
 This file records why each finding received its priority.
 

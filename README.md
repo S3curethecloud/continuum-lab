@@ -124,3 +124,11 @@ The remediation engine does not patch code, mutate cloud resources, target exter
 Status
 
 v0.1 local discovery, validation, prioritization, remediation recommendation, and evidence generation are working.
+
+## Demo Summary
+
+The lab generates an executive-facing summary:
+
+- `evidence/demo-summary.md`
+
+This report summarizes the lab purpose, safety boundaries, discovery results, why `FIND-001` is prioritized as `P0`, remediation guidance, generated evidence artifacts, and recommended next phases.
