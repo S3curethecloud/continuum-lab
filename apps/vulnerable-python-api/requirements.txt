@@ -1,0 +1,3 @@
+# Intentionally outdated dependency marker for local lab discovery.
+# Do not use this in production.
+django==2.2.0

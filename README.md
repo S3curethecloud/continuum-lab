@@ -38,61 +38,37 @@ scanners/      Scanner configuration and adapters
 engine/        Reasoning, scoring, validation, and evidence scripts
 evidence/      Generated findings, reports, and decision traces
 policies/      Learn, assist, and lab-only enforce mode controls
-```
-
-## Trust Modes
-
-| Mode | Behavior |
-|---|---|
-| learn | Generate findings and recommendations only |
-| assist | Generate suggested patches or remediation plans for review |
-| enforce-lab-only | Apply safe, reversible changes only inside the lab |
-
-## Run the Lab
-
-```bash
+Trust Modes
+Mode	Behavior
+learn	Generate findings and recommendations only
+assist	Generate suggested patches or remediation plans for review
+enforce-lab-only	Apply safe, reversible changes only inside the lab
+Run the Lab
 ./run_lab.sh
-```
 
 This generates:
 
-- `evidence/prioritized-findings.json`
-- `evidence/prioritized-risk-register.md`
-- `evidence/decision-trace.md`
-- `evidence/remediation-plan.json`
-- `evidence/remediation-plan.md`
-- `evidence/evidence-bundle.json`
-- `evidence/evidence-bundle.md`
-
-## Current v0.1 Workflow
-
-```text
-normalized findings
-  -> synthetic context
+evidence/findings.json
+evidence/validation-results.json
+evidence/prioritized-findings.json
+evidence/prioritized-risk-register.md
+evidence/decision-trace.md
+evidence/remediation-plan.json
+evidence/remediation-plan.md
+evidence/evidence-bundle.json
+evidence/evidence-bundle.md
+Current v0.1 Workflow
+local lab files
+  -> normalized discovery findings
+  -> lab-only validation
   -> context-aware prioritization
   -> decision trace
   -> remediation plan
   -> evidence bundle
-```
-
-## Status
-
-Initial reasoning and evidence-generation scaffold in progress.
-
-## Remediation Phase
-
-The remediation phase generates recommendation-only artifacts:
-
-- `evidence/remediation-plan.json`
-- `evidence/remediation-plan.md`
-
-The remediation engine does not patch code, mutate cloud resources, target external systems, or perform autonomous production enforcement.
-
-## Local Vulnerable Node API
+Local Vulnerable Node API
 
 The first local lab service is:
 
-```text
 apps/vulnerable-node-api/
 
 It provides a local-only Express API for demonstrating unsafe SQL-style query construction.
@@ -117,3 +93,34 @@ No real customer data
 No real credentials
 No external targets
 No production remediation
+Discovery Phase
+
+The discovery phase uses a local static ingester:
+
+python3 engine/ingest_findings.py
+
+It inspects local lab files and generates:
+
+evidence/findings.json
+
+Current local discovery targets:
+
+Finding	Source File	Purpose
+FIND-001	apps/vulnerable-node-api/src/routes/search.js	Unsafe SQL-style query construction marker
+FIND-002	apps/vulnerable-python-api/requirements.txt	Outdated dependency marker
+FIND-003	apps/vulnerable-node-api/test/fixtures/example.env	Secret-like test fixture marker
+
+The discovery ingester is local-only. It does not scan external systems, call cloud APIs, exploit targets, or mutate resources.
+
+Remediation Phase
+
+The remediation phase generates recommendation-only artifacts:
+
+evidence/remediation-plan.json
+evidence/remediation-plan.md
+
+The remediation engine does not patch code, mutate cloud resources, target external systems, or perform autonomous production enforcement.
+
+Status
+
+v0.1 local discovery, validation, prioritization, remediation recommendation, and evidence generation are working.

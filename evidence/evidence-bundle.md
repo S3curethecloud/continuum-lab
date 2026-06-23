@@ -1,6 +1,6 @@
 # Continuum Lab Evidence Bundle
 
-Generated: 2026-06-23T04:20:31.182205+00:00
+Generated: 2026-06-23T04:24:24.049376+00:00
 
 ## Scope
 
@@ -55,7 +55,7 @@ This evidence bundle was generated from local lab data only.
 - Severity: high
 - Risk score: 100
 - Validation status: confirmed_in_lab
-- Source: semgrep
+- Source: local-static-discovery
 - File: apps/vulnerable-node-api/src/routes/search.js
 - Recommended action: Prepare parameterized query patch, add regression test, and rerun validation in the lab.
 
@@ -74,7 +74,7 @@ Decision reasons:
 - +5: scanner confidence is high
 - +10: validation status is confirmed_in_lab
 
-Description: Potential unsafe query construction in customer search route.
+Description: Unsafe SQL-style query construction marker found in local lab route.
 
 ### FIND-002 - P2
 
@@ -83,7 +83,7 @@ Description: Potential unsafe query construction in customer search route.
 - Severity: critical
 - Risk score: 59
 - Validation status: unconfirmed
-- Source: trivy
+- Source: local-static-discovery
 - File: apps/vulnerable-python-api/requirements.txt
 - Recommended action: Validate reachability and usage in the lab, then schedule remediation if confirmed.
 
@@ -97,7 +97,7 @@ Decision reasons:
 - +0: low-sensitivity data classification is test
 - +0: validation status is unconfirmed
 
-Description: Critical dependency finding in a dev-only internal worker.
+Description: Outdated dependency marker found in local lab requirements file.
 
 ### FIND-003 - P4
 
@@ -106,7 +106,7 @@ Description: Critical dependency finding in a dev-only internal worker.
 - Severity: medium
 - Risk score: 25
 - Validation status: likely_test_fixture
-- Source: gitleaks
+- Source: local-static-discovery
 - File: apps/vulnerable-node-api/test/fixtures/example.env
 - Recommended action: Keep as low priority, document fixture status, and ensure test secrets cannot be mistaken for real secrets.
 
@@ -126,7 +126,7 @@ Decision reasons:
 - -25: validation status is likely_test_fixture
 - cap: validation status likely_test_fixture limits score to 25
 
-Description: Secret-like string appears in a test fixture.
+Description: Secret-like string found in a local test fixture.
 
 
 ## Trust Boundary

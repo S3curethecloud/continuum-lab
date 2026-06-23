@@ -19,8 +19,10 @@
         "+5: scanner confidence is high",
         "+10: validation status is confirmed_in_lab"
       ],
-      "description": "Potential unsafe query construction in customer search route.",
+      "description": "Unsafe SQL-style query construction marker found in local lab route.",
+      "discovery_method": "static_marker_match",
       "environment": "prod-like",
+      "external_targeting": false,
       "file": "apps/vulnerable-node-api/src/routes/search.js",
       "finding_id": "FIND-001",
       "has_waf": false,
@@ -29,9 +31,11 @@
       "production_path": true,
       "recommended_action": "Prepare parameterized query patch, add regression test, and rerun validation in the lab.",
       "risk_score": 100,
+      "safe_lab_only": true,
+      "scanner_family": "sast",
       "service": "customer-api",
       "severity": "high",
-      "source": "semgrep",
+      "source": "local-static-discovery",
       "type": "sql_injection",
       "validation_evidence": [
         "Finding maps to customer-api",
@@ -56,8 +60,10 @@
         "+0: low-sensitivity data classification is test",
         "+0: validation status is unconfirmed"
       ],
-      "description": "Critical dependency finding in a dev-only internal worker.",
+      "description": "Outdated dependency marker found in local lab requirements file.",
+      "discovery_method": "static_dependency_marker_match",
       "environment": "dev",
+      "external_targeting": false,
       "file": "apps/vulnerable-python-api/requirements.txt",
       "finding_id": "FIND-002",
       "has_waf": true,
@@ -66,9 +72,11 @@
       "production_path": false,
       "recommended_action": "Validate reachability and usage in the lab, then schedule remediation if confirmed.",
       "risk_score": 59,
+      "safe_lab_only": true,
+      "scanner_family": "dependency",
       "service": "admin-worker",
       "severity": "critical",
-      "source": "trivy",
+      "source": "local-static-discovery",
       "type": "vulnerable_dependency",
       "validation_evidence": [
         "Finding maps to admin-worker",
@@ -99,8 +107,10 @@
         "-25: validation status is likely_test_fixture",
         "cap: validation status likely_test_fixture limits score to 25"
       ],
-      "description": "Secret-like string appears in a test fixture.",
+      "description": "Secret-like string found in a local test fixture.",
+      "discovery_method": "static_secret_fixture_marker_match",
       "environment": "prod-like",
+      "external_targeting": false,
       "file": "apps/vulnerable-node-api/test/fixtures/example.env",
       "finding_id": "FIND-003",
       "has_waf": false,
@@ -109,9 +119,11 @@
       "production_path": true,
       "recommended_action": "Keep as low priority, document fixture status, and ensure test secrets cannot be mistaken for real secrets.",
       "risk_score": 25,
+      "safe_lab_only": true,
+      "scanner_family": "secret",
       "service": "customer-api",
       "severity": "medium",
-      "source": "gitleaks",
+      "source": "local-static-discovery",
       "type": "secret_detection",
       "validation_evidence": [
         "Finding path contains test/fixtures",
@@ -122,7 +134,7 @@
       "validation_status": "likely_test_fixture"
     }
   ],
-  "generated_at": "2026-06-23T04:20:31.182205+00:00",
+  "generated_at": "2026-06-23T04:24:24.049376+00:00",
   "policy_files": {
     "assist": "mode: assist\ndescription: \"Generate remediation plans and optional patch suggestions for human review.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  create_patch_suggestion: true\n  apply_patch: false\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true",
     "enforce_lab_only": "mode: enforce-lab-only\ndescription: \"Apply safe, reversible remediations inside local lab services only.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  create_patch_suggestion: true\n  apply_patch_in_lab: true\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true\nscope:\n  allowed_environment: local_lab_only",
