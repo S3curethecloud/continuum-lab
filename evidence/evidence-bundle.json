@@ -163,7 +163,7 @@
       "validation_status": "likely_test_fixture"
     }
   ],
-  "generated_at": "2026-06-23T04:47:26.640742+00:00",
+  "generated_at": "2026-06-23T04:53:20.252464+00:00",
   "policy_files": {
     "assist": "mode: assist\ndescription: \"Generate remediation plans and optional patch suggestions for human review.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  create_patch_suggestion: true\n  apply_patch: false\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true",
     "enforce_lab_only": "mode: enforce-lab-only\ndescription: \"Apply safe, reversible remediations inside local lab services only.\"\nallow_actions:\n  scan: true\n  enrich_context: true\n  prioritize: true\n  validate_in_lab: true\n  recommend_fix: true\n  generate_evidence: true\n  create_patch_suggestion: true\n  apply_patch_in_lab: true\n  mutate_cloud: false\n  external_targeting: false\nhuman_approval_required: true\nscope:\n  allowed_environment: local_lab_only",

@@ -6,6 +6,7 @@ Discovery -> Prioritization -> Validation -> Remediation -> Evidence
 
 ## Quick Links
 
+- [Demo Checklist](DEMO_CHECKLIST.md)
 - [Executive Demo Summary](evidence/demo-summary.md)
 - [Prioritized Risk Register](evidence/prioritized-risk-register.md)
 - [Remediation Plan](evidence/remediation-plan.md)
