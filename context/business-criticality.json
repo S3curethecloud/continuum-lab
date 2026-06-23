@@ -1,0 +1,12 @@
+{
+  "services": [
+    {
+      "service": "customer-api",
+      "criticality": "tier_1"
+    },
+    {
+      "service": "admin-worker",
+      "criticality": "tier_3"
+    }
+  ]
+}

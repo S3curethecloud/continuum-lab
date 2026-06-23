@@ -1,0 +1,14 @@
+{
+  "services": [
+    {
+      "service": "customer-api",
+      "privilege_level": "high",
+      "over_permissive": true
+    },
+    {
+      "service": "admin-worker",
+      "privilege_level": "low",
+      "over_permissive": false
+    }
+  ]
+}

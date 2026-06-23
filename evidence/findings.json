@@ -1,0 +1,35 @@
+[
+  {
+    "finding_id": "FIND-001",
+    "source": "semgrep",
+    "type": "sql_injection",
+    "service": "customer-api",
+    "file": "apps/vulnerable-node-api/src/routes/search.js",
+    "severity": "high",
+    "confidence": "high",
+    "validation_status": "pending_validation",
+    "description": "Potential unsafe query construction in customer search route."
+  },
+  {
+    "finding_id": "FIND-002",
+    "source": "trivy",
+    "type": "vulnerable_dependency",
+    "service": "admin-worker",
+    "file": "apps/vulnerable-python-api/requirements.txt",
+    "severity": "critical",
+    "confidence": "medium",
+    "validation_status": "unconfirmed",
+    "description": "Critical dependency finding in a dev-only internal worker."
+  },
+  {
+    "finding_id": "FIND-003",
+    "source": "gitleaks",
+    "type": "secret_detection",
+    "service": "customer-api",
+    "file": "apps/vulnerable-node-api/test/fixtures/example.env",
+    "severity": "medium",
+    "confidence": "low",
+    "validation_status": "likely_test_fixture",
+    "description": "Secret-like string appears in a test fixture."
+  }
+]

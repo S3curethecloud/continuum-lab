@@ -1,0 +1,18 @@
+{
+  "services": [
+    {
+      "service": "customer-api",
+      "internet_reachable": true,
+      "production_path": true,
+      "auth_required": false,
+      "has_waf": false
+    },
+    {
+      "service": "admin-worker",
+      "internet_reachable": false,
+      "production_path": false,
+      "auth_required": true,
+      "has_waf": true
+    }
+  ]
+}

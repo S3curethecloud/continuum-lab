@@ -1,0 +1,14 @@
+{
+  "services": [
+    {
+      "service": "customer-api",
+      "data_classification": "customer_pii",
+      "regulated": true
+    },
+    {
+      "service": "admin-worker",
+      "data_classification": "test",
+      "regulated": false
+    }
+  ]
+}

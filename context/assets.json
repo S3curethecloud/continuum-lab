@@ -1,0 +1,20 @@
+{
+  "services": [
+    {
+      "service": "customer-api",
+      "owner": "appsec-lab-team",
+      "environment": "prod-like",
+      "repo_path": "apps/vulnerable-node-api",
+      "runtime": "node",
+      "description": "Demo customer-facing API used for Continuum Lab scoring."
+    },
+    {
+      "service": "admin-worker",
+      "owner": "platform-lab-team",
+      "environment": "dev",
+      "repo_path": "apps/vulnerable-python-api",
+      "runtime": "python",
+      "description": "Demo internal worker used for lower-priority comparison."
+    }
+  ]
+}
